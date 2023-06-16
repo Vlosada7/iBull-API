@@ -88,7 +88,24 @@ const getTradeById = async (req: Request, res: Response) => {
 
 
 const deleteTrade = async (req: Request, res: Response) => {
-	res.status(200).send("delete Trade working");
+  const { id } = req.params;
+  if (id) {
+    try {
+      const trade = await TradeModel.findOne({ id }).exec();
+      if (trade) {
+        await TradeModel.deleteOne({ id }).exec();
+        res.status(204).send({ message: `Trade with ${id} successfully deleted`});
+      } else {
+        res.status(404).send({ message: "There is no trade with the given id in the collection" });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Unexpected API error" });
+    }
+  } else {
+    res.status(400).send({ message: "Parameter is missing to delete a trade" });
+  }
 };
+
 
 export { postTrade, getTrade, getTradeById, deleteTrade };
