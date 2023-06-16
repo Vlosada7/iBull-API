@@ -45,18 +45,50 @@ const getTrade = async (req: Request, res: Response) => {
 	const { type, user_id } = req.query;
 	let trades;
 	if (type && user_id) {
-		try {
-			trades = await TradeModel.find({ type, user_id }).exec();
-			if (trades.length === 0) {
-				res.status(404).send({ message: "Trade not found" });
-			} else {
-				res.status(200).send(trades);
-			}
-		} catch (error) {
-			console.error(error);
-			res.status(500).send({ message: "Unexpected API error" });
-		}
-	} else {
+    if (type !== "buy" && type !== "sell") {
+      res.status(400).send({ message: "Invalid type for the trade" });
+    } else {
+      try {
+        trades = await TradeModel.find({ type, user_id }).exec();
+        if (trades.length === 0) {
+          res.status(404).send({ message: "Trade not found" });
+        } else {
+          res.status(200).send(trades);
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: "Unexpected API error" });
+      }
+    }
+	} else if (type && !user_id) {
+    if (type !== "buy" && type !== "sell") {
+      res.status(400).send({ message: "Invalid type for the trade" });
+    } else {
+      try {
+        trades = await TradeModel.find({ type }).exec();
+      if (trades.length === 0) {
+        res.status(404).send({message: `No trades with type ${type} found`});
+      } else {
+        res.status(200).send(trades);
+      }
+      } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: "Unexpected API error" });
+      }
+    }
+  } else if (!type && user_id) {
+    try {
+      trades = await TradeModel.find({ user_id }).exec();
+      if (trades.length === 0) {
+        res.status(404).send({message: `No trades by user id: ${user_id}`});
+      } else {
+        res.status(200).send(trades);
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Unexpected API error" });
+    }
+  } else {
 		try {
 			trades = await TradeModel.find().exec();
 			if (trades.length === 0) {
