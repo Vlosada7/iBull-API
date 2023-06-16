@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
 
-const uri =
-	"mongodb+srv://Vlosada:abcd1234@ibull.8rhctdf.mongodb.net/";
+const uri = 'mongodb://127.0.0.1:27017/iBull';
+
+// const uri =
+// 	"mongodb+srv://Vlosada:abcd1234@ibull.8rhctdf.mongodb.net/";
 
 mongoose
 	.connect(uri)
