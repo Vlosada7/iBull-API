@@ -72,8 +72,20 @@ const getTrade = async (req: Request, res: Response) => {
 };
 
 const getTradeById = async (req: Request, res: Response) => {
-	res.status(200).send("get by id Trade working");
+  const { id } = req.params;
+  try {
+    const trade = await TradeModel.findOne({ id }).exec();
+    if (trade) {
+      res.status(200).send(trade);
+    } else {
+      res.status(404).send({ message: "There is no trade with the given id in the collection" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Unexpected API error" });
+  }
 };
+
 
 const deleteTrade = async (req: Request, res: Response) => {
 	res.status(200).send("delete Trade working");
