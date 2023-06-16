@@ -42,48 +42,52 @@ const postTrade = async (req: Request, res: Response) => {
 
 
 const getTrade = async (req: Request, res: Response) => {
-  const { type, user_id } = req.query;
-  let trades;
-  if (type && user_id) {
-    try {
-      trades = await TradeModel.find({ type, user_id }).exec();
-      if (trades.length === 0) {
-        res.status(404).send({message: "Trade not found"});
-      } else {
-        res.status(200).send(trades);
-      }
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({ message: "Unexpected API error" });
-    }
-  } else {
-    try {
-      trades= await TradeModel.find().exec();
-      if (trades.length === 0) {
-        res.status(200).send({message: "Not trades yer"});
-      } else {
-        res.status(200).send(trades);
-      }
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({ message: "Unexpected API error" });
-    }
-  }
+	const { type, user_id } = req.query;
+	let trades;
+	if (type && user_id) {
+		try {
+			trades = await TradeModel.find({ type, user_id }).exec();
+			if (trades.length === 0) {
+				res.status(404).send({ message: "Trade not found" });
+			} else {
+				res.status(200).send(trades);
+			}
+		} catch (error) {
+			console.error(error);
+			res.status(500).send({ message: "Unexpected API error" });
+		}
+	} else {
+		try {
+			trades = await TradeModel.find().exec();
+			if (trades.length === 0) {
+				res.status(200).send({ message: "Not trades yet" });
+			} else {
+				res.status(200).send(trades);
+			}
+		} catch (error) {
+			console.error(error);
+			res.status(500).send({ message: "Unexpected API error" });
+		}
+	}
 };
 
 const getTradeById = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  try {
-    const trade = await TradeModel.findOne({ id }).exec();
-    if (trade) {
-      res.status(200).send(trade);
-    } else {
-      res.status(404).send({ message: "There is no trade with the given id in the collection" });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ message: "Unexpected API error" });
-  }
+	const { id } = req.params;
+	try {
+		const trade = await TradeModel.findOne({ id }).exec();
+		if (trade) {
+			res.status(200).send(trade);
+		} else {
+			res
+				.status(404)
+				.send({
+					message: "There is no trade with the given id in the collection",
+				});
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(500).send({ message: "Unexpected API error" });
+	}
 };
 
 
