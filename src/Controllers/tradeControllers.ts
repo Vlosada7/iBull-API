@@ -13,32 +13,40 @@ async function getLastTradeId(): Promise<number> {
 
 const postTrade = async (req: Request, res: Response) => {
   const { type, user_id, symbol, shares, price } = req.body;
-  if (type && user_id && symbol && shares && price) {
-    if (price < 1 || price > 100) {
-      res.status(400).send({ message: "Unaccepted price range" });
-    } else if (type !== "buy" && type !== "sell") {
-      res.status(400).send({ message: "Invalid type for the trade" });
-    } else {
-      try {
-        const timestamp = Date.now();
-        const lastTrade = await getLastTradeId(); 
-        const newTrade = await TradeModel.create({ id: lastTrade + 1, type, user_id, symbol, shares, price, timestamp });
-        res.status(201).send({
-          message: "Trade created correctly",
-          id: newTrade.id,
-          symbol: newTrade.symbol,
-          shares: newTrade.shares,
-          price: newTrade.price,
-        });
-      } catch (error) {
-        console.error(error);
-        res.status(500).send({ message: "Unexpected API error" });
-      }
+
+  if (price < 1 || price > 100) {
+    res.status(400).send({ message: "Unaccepted price range" });
+  } else if (type !== "buy" && type !== "sell") {
+    res.status(400).send({ message: "Invalid type for the trade" });
+  } else if (type && user_id && symbol && shares && price) {
+    try {
+      const timestamp = Date.now();
+      const lastTrade = await getLastTradeId();
+      const newTrade = await TradeModel.create({
+        id: lastTrade + 1,
+        type,
+        user_id,
+        symbol,
+        shares,
+        price,
+        timestamp,
+      });
+      res.status(201).send({
+        message: "Trade created correctly",
+        id: newTrade.id,
+        symbol: newTrade.symbol,
+        shares: newTrade.shares,
+        price: newTrade.price,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Unexpected API error" });
     }
   } else {
     res.status(400).send({ message: "Missing parameter to create a trade" });
   }
 };
+
 
 
 const getTrade = async (req: Request, res: Response) => {
