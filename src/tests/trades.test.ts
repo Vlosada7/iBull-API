@@ -164,3 +164,25 @@ describe("Get Trade", () => {
     expect(JSON.stringify(res.body)).toEqual(JSON.stringify(trades));
   })
 })
+
+describe("Get trade by ID", () => {
+  beforeAll(async () => {
+    await mongoose.connect('mongodb://127.0.0.1:27017/iBull');
+  });
+  afterAll(async () => {
+    await mongoose.disconnect();
+  })
+  it("Should return with 404 if the trade doesnt exist with passed id", async () => {
+    const trades = await TradeModel.find().exec();
+    const id = trades.length + 5;
+    const res = await request(URL).get(`/trades/${id}`);
+    expect(res.status).toBe(404);
+    expect(res.body.message).toEqual("There is no trade with the given id in the collection");
+  })
+  it("Should return the specific trade if passed the id", async () => {
+    const trade = await TradeModel.find({id: 1});
+    const res = await request(URL).get("/trades/1");
+    expect(res.status).toBe(200);
+    expect(JSON.stringify(res.body)).toEqual(JSON.stringify(trade[0]));
+  })
+})
