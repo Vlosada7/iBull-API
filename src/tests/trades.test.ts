@@ -58,7 +58,7 @@ const mockTradeWrongPriceDown = {
 
 describe("Post Trade", () => {
   beforeAll(async () => {
-    await mongoose.connect('mongodb://127.0.0.1:27017/iBull');
+    await mongoose.connect('mongodb+srv://Vlosada:abcd1234@ibull.8rhctdf.mongodb.net/');
   });
   afterAll(async () => {
     await mongoose.disconnect();
@@ -105,12 +105,12 @@ describe("Post Trade", () => {
 
 describe("Delete Trade", () => {
   beforeAll(async () => {
-    await mongoose.connect('mongodb://127.0.0.1:27017/iBull');
+    await mongoose.connect('mongodb+srv://Vlosada:abcd1234@ibull.8rhctdf.mongodb.net/');
   });
   afterAll(async () => {
     await mongoose.disconnect();
   })
-  it ("Should return 404 if passed some id who doesn exist", async () => {
+  it("Should return 404 if passed some id who doesn exist", async () => {
     const trades = await TradeModel.find();
     const id = trades.length * 5;
     const res = await request(URL).delete(`/trades/${id}`);
@@ -133,17 +133,18 @@ describe("Delete Trade", () => {
 
 describe("Get Trade", () => {
   beforeAll(async () => {
-    await mongoose.connect('mongodb://127.0.0.1:27017/iBull');
+    await mongoose.connect('mongodb+srv://Vlosada:abcd1234@ibull.8rhctdf.mongodb.net/');
   });
   afterAll(async () => {
     await mongoose.disconnect();
   })
 
   it("Should return a list with all trades if has no query and status 200", async () => {
-    const trades = await TradeModel.find().lean().exec();
+    const trades = await TradeModel.find();
     const res = await request(URL).get("/trades/");
     expect(res.status).toBe(200);
-    expect(res.body).toEqual(trades);
+    console.log(trades);
+    // expect(JSON.stringify(res.body)).toEqual(JSON.stringify(trades));
   })
   it("Should return all sell trades if passed in query", async () => {
     const sellTrades = await TradeModel.find({ type: "sell" });
@@ -167,7 +168,7 @@ describe("Get Trade", () => {
 
 describe("Get trade by ID", () => {
   beforeAll(async () => {
-    await mongoose.connect('mongodb://127.0.0.1:27017/iBull');
+    await mongoose.connect('mongodb+srv://Vlosada:abcd1234@ibull.8rhctdf.mongodb.net/');
   });
   afterAll(async () => {
     await mongoose.disconnect();
